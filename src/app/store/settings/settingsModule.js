@@ -1,15 +1,21 @@
-const state= {
-}
-const mutations= {
-}
-const actions= {
-}
-const getters= {
+//import  httpBase from "../../utils/http/http.js"
+import axios from 'axios';
+
+const settingsModule = {
+    namespaced:true,
+    state: {
+    
+    },
+    mutations: {
+       
+    },
+    actions: {
+       
+        
+    },
+    getters: {
+        
+    }
 }
 
-export default{
-    state,
-    mutations,
-    actions,
-    getters
-}
+export default settingsModule

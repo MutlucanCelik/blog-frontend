@@ -6,6 +6,7 @@ import Category from "@/app/views/admin/pages/Category.vue";
 import Article from "@/app/views/admin/pages/Article.vue";
 import Setting from "@/app/views/admin/pages/Setting.vue";
 import Login from "@/app/views/admin/pages/Login.vue";
+import Notfound from "@/app/views/Notfound.vue";
 
 const routes = [
     {
@@ -44,7 +45,12 @@ const routes = [
           component: Setting
        },
      ]
-  }
+   },
+   {
+    path:'/:catchAll(.*)',
+    name:'Notfound',
+    component:Notfound
+   }
   
 ]
 

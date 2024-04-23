@@ -1,10 +1,10 @@
 import axios from 'axios';
-import router from '../router'; // Router'ı içe aktarın
+import router from '../../router/index.js';// Router'ı içe aktarın
 import { appLocalStorage } from '../storage/storage.js';
-const { VUE_APP_API_BASE_URL } = process.env;
+const  BASE_URL  = import.meta.env.VITE_BASE_URL;
 
 const config = {
-  baseURL: VUE_APP_API_BASE_URL
+  baseURL: BASE_URL
 };
 
 let token = appLocalStorage.getItem("token");
@@ -35,4 +35,4 @@ httpBase.interceptors.request.use(authInterceptor);
   }
 ); */
 
-export { httpBase };
+export default httpBase ;

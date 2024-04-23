@@ -22,9 +22,9 @@ export default createStore({
     },
   },
   modules: {
-    users: usersModule,
-    categories: categoriesModule,
-    articles: articlesModule,
-    settings : settingsModele
+    usersModule,
+    categoriesModule,
+    articlesModule,
+    settingsModele
   }
 })

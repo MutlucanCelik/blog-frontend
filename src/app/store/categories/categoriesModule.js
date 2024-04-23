@@ -1,15 +1,19 @@
-const state= {
-}
-const mutations= {
-}
-const actions= {
-}
-const getters= {
+import  httpBase from "../../utils/http/http.js"
+
+const categoriesModule = {
+    namespaced:true,
+    state: {
+       
+    },
+    mutations: {
+       
+    },
+    actions: {
+        
+    },
+    getters: {
+        
+    }
 }
 
-export default{
-    state,
-    mutations,
-    actions,
-    getters
-}
+export default categoriesModule
