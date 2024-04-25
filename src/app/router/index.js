@@ -1,12 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store';
+
 import AdminLayout from "@/app/views/admin/layout/AdminLayout.vue";
 import Dashboard from "@/app/views/admin/pages/Dashboard.vue";
 import User from "@/app/views/admin/pages/User.vue";
 import Category from "@/app/views/admin/pages/Category.vue";
-import Article from "@/app/views/admin/pages/Article.vue";
+import Article from "@/app/views/admin/pages/article/Article.vue";
+import ArticleDetail from "@/app/views/admin/pages/article/ArticleDetail.vue";
 import Setting from "@/app/views/admin/pages/Setting.vue";
 import Login from "@/app/views/admin/pages/Login.vue";
 import Notfound from "@/app/views/Notfound.vue";
+
 
 const routes = [
     {
@@ -18,31 +22,44 @@ const routes = [
     path: '/admin',
     name: 'AdminLayout',
     component: AdminLayout,
+    meta: {
+      requiresAuth: true
+    },
      children: [
        {
          path:"",
          name: "Dashboard",
-         component: Dashboard
+         component: Dashboard,
+         
        },
        {
-         path:"/admin/users",
+         path:"users",
          name: "User",
-         component: User
+         component: User,
+         meta: {
+          requiresAuth: true
+        },
        },
        {
-         path:"/admin/categories",
+         path:"categories",
          name: "Category",
-         component: Category
+         component: Category,
        },
        {
-          path:"/admin/articles",
+          path:"articles",
           name: "Article",
-          component: Article
+          component: Article,
        },
        {
-          path:"/admin/settings",
+        path:"article-detail/:articleId",
+        name: "ArticleDetail",
+        component: ArticleDetail,
+        props: true
+       },
+       {
+          path:"settings",
           name: "Setting",
-          component: Setting
+          component: Setting,
        },
      ]
    },
@@ -58,5 +75,16 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
+
+router.beforeEach(async (to, from, next) => {
+  let requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
+  let isLogin = await store.getters.isLogin;
+
+  if (requiresAuth && !isLogin) {
+    next({ name: "Login" });
+  }else {
+    next();
+  }
+});
 
 export default router

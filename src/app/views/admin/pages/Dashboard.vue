@@ -1,6 +1,6 @@
 <template>
   <div>
-    <WidgetsStatsA class="mb-4" :userCount = userCount :articleCount = articleCount />
+    <WidgetsStatsA class="mb-4" :userCount= userCount :articleCount= articleCount />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import MainChart from '@/app/views/admin/pages/MainChart.vue'
 import WidgetsStatsA from '@/app/components/widgets/WidgetsStatsTypeA.vue'
 import { useStore } from 'vuex'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 
 export default {
   name: 'Dashboard',
@@ -18,7 +18,7 @@ export default {
     WidgetsStatsA,
   },
   setup() {
-     const store = useStore();
+    const store = useStore();
     const userCount = computed(() => store.getters['usersModule/numberOfActiveUsers'])
     const articleCount = computed(() => store.getters['articlesModule/numberOfActiveArticles'])
 
@@ -27,9 +27,7 @@ export default {
       store.dispatch('articlesModule/getArticles');
 
     });
-   
-    
-
+  
     return {
       userCount,
       articleCount

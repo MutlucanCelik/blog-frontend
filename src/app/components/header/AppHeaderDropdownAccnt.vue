@@ -58,12 +58,17 @@
 </template>
 
 <script>
-import avatar from '@/assets/images/avatars/8.jpg'
+import { computed } from 'vue';
+import { useStore } from 'vuex'
+
 export default {
   name: 'AppHeaderDropdownAccnt',
   setup() {
+
+    const store = useStore();
+    const avatar = computed(()=> store.state.user.image)
     return {
-      avatar: avatar,
+      avatar,
       itemsCount: 42,
     }
   },
