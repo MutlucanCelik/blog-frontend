@@ -4,55 +4,174 @@
       <CCard class="mb-4">
         <CCardHeader> Kategoriler </CCardHeader>
         <CCardBody>
-
           <br />
-          <CTable align="middle" class="mb-0 border" hover responsive>
-            <CTableHead class="text-nowrap">
-              <CTableRow>
-                <CTableHeaderCell class="bg-body-secondary"> Resim </CTableHeaderCell>
-                <CTableHeaderCell class="bg-body-secondary"> Üst kategori</CTableHeaderCell>
-                <CTableHeaderCell class="bg-body-secondary"> Ad </CTableHeaderCell>
-                <CTableHeaderCell class="bg-body-secondary">Durum</CTableHeaderCell>
-                <CTableHeaderCell class="bg-body-secondary">İşlemler</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              /*Datayı burada bas*/
-              <CTableRow v-for="item in tableExample" :key="item.name">
-                <CTableDataCell class="text-center">
-                  <CAvatar size="md" :src="item.avatar.src" :status="item.avatar.status" />
-                </CTableDataCell>
-                <CTableDataCell>
-                  <div>{{ item.user.name }}</div>
-                  <div class="small text-body-secondary text-nowrap">
-                    <span>{{ item.user.new ? 'New' : 'Recurring' }}</span> |
-                    {{ item.user.registered }}
+          <v-card style="padding:0 1rem" >
+            <v-card-title class="d-flex align-center pe-2">
+              
+              <v-text-field
+                v-model="search"
+                density="compact"
+                label="Ara.."
+                prepend-inner-icon="mdi-magnify"
+                variant="solo-filled"
+                flat
+                hide-details
+                single-line
+                class="search-container"
+              ></v-text-field>
+               <CButton  class="btn btn-md btn-success text-white"  @click="() => createModalStatus = true">Kategori ekle</CButton>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-data-table
+              :key="categories.length"
+              :items-per-page="5"
+              :items-per-page-options="[10, 20, 30]"
+              :headers="headers"
+              v-model:search="search"
+              :items="categories"
+              no-data-text="Tabloda veri yok"
+            >
+              <template v-slot:item="{ item }">
+                <tr>
+                  <td>
+                    <v-img
+                      :src="item.image"
+                      height="60"
+                      width="60"
+                      style="margin:0.5rem auto"
+                      cover
+                      rounded
+                    ></v-img>
+                  </td>
+                  <td>{{ item.name }}</td>
+                  <td class="text-center">{{ item.parent_id || '-' }}</td>
+                  <td class="text-center">{{ item.order }}</td>
+                  <td class="text-center">
+                    <v-chip
+                    :color="item.show_home_page_status ? 'green' : 'red'"
+                    :text="item.show_home_page_status ? 'Aktif' : 'Pasif'"
+                    class="text-uppercase"
+                    size="small"
+                    label
+                    style="cursor:pointer;"
+                    :data-id= item.id
+                    @click="changeHighlightStatus"
+                  ></v-chip>
+                  </td>
+                   <td>
+                    <v-chip
+                    :color="item.status ? 'green' : 'red'"
+                    :text="item.status ? 'Aktif' : 'Pasif'"
+                    class="text-uppercase"
+                    size="small"
+                    label
+                    style="cursor:pointer;"
+                    :data-id= item.id
+                    @click="changeStatus"
+                  ></v-chip>
+                  </td>
+                 <td class="text-center">
+                    <CButton class="btn-detail me-1" style="color:white!important" size="sm" color="primary" @click="detail(item.id)">Detay</CButton>
+                    <CButton class="btn-update me-1" style="color:white!important" size="sm" color="warning" @click="updateCategory(item.id)">Güncelle</CButton>
+                    <CButton class="btn-delete" style="color:white!important" size="sm" color="danger" @click="deleteCategory(item.id)">Sil</CButton>
+                  </td>
+                  
+                </tr>
+              </template>
+            </v-data-table>
+            <CModal 
+              :visible="createModalStatus"
+              @close="() => { createModalStatus = false }"
+              aria-labelledby="LiveDemoExampleLabel"
+            >
+              <CModalHeader>
+                <CModalTitle id="modal_title">Kategori ekle</CModalTitle>
+              </CModalHeader>
+              <CModalBody id="modal_content">
+                <CForm id="form_create" @submit.prevent="handleCreateSubmit">
+                  <div class="mb-3">
+                    <CFormLabel for="name">Kategori adı</CFormLabel>
+                    <CFormInput name="name" id="name" type="text" placeholder=""/>
                   </div>
-                </CTableDataCell>
-                <CTableDataCell class="text-center">
-                  <CIcon size="xl" :name="item.country.flag" :title="item.country.name" />
-                </CTableDataCell>
-                <CTableDataCell>
-                  <div class="d-flex justify-content-between align-items-baseline">
-                    <div class="fw-semibold">{{ item.usage.value }}%</div>
-                    <div class="text-nowrap text-body-secondary small ms-3">
-                      {{ item.usage.period }}
-                    </div>
+                  <div class="mb-3">
+                    <CFormLabel for="image">Resim</CFormLabel>
+                    <CFormInput name="image" id="image" type="file"/>
                   </div>
-                  <CProgress thin :color="item.usage.color" :value="item.usage.value" />
-                </CTableDataCell>
-                <CTableDataCell class="text-center">
-                  <CIcon size="xl" :name="item.payment.icon" />
-                </CTableDataCell>
-                <CTableDataCell>
-                  <div class="small text-body-secondary">Last login</div>
-                  <div class="fw-semibold text-nowrap">
-                    {{ item.activity }}
+                  <div class="mb-3">
+                    <CFormLabel for="exampleFormControlInput1">Üst kategori</CFormLabel>
+                    <CFormSelect name="parent_id" aria-label="Default select example">
+                      <option value="">Seçim yapın</option>
+                      <option v-for="category in categories" :key="category.id" :value="category.id">{{category.name}}</option>
+                    </CFormSelect>
                   </div>
-                </CTableDataCell>
-              </CTableRow>
-            </CTableBody>
-          </CTable>
+                  <div class="mb-3">
+                    <CFormLabel for="order">Sırası</CFormLabel>
+                    <CFormInput name="order" id="order" type="number" placeholder=""/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormCheck name="status" id="status" label="Durum" placeholder=""/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormCheck name="show_home_page_status" label="Öne çıkar" id="show_home_page_status" placeholder=""/>
+                  </div>
+                  <button type="submit" class="btn btn-md btn-success w-100 text-white">Ekle</button>
+                </CForm>
+              </CModalBody>
+            </CModal>
+
+            <CModal 
+              :visible="updateModalStatus"
+              @close="() => { updateModalStatus = false }"
+              aria-labelledby="LiveDemoExampleLabel"
+            >
+              <CModalHeader>
+                <CModalTitle id="modal_title">Kategori güncelle</CModalTitle>
+              </CModalHeader>
+              <CModalBody id="modal_content">
+                <CForm id="form_update" @submit.prevent="handleUpdateSubmit">
+                  <input name="id" type="hidden" :value="categoryToUpdate.id">
+                  <div class="mb-3">
+                    <CFormLabel for="name">Kategori adı</CFormLabel>
+                    <CFormInput name="name" id="name" type="text" :value="categoryToUpdate.name" placeholder=""/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormLabel for="image">Resim</CFormLabel>
+                    <CFormInput name="image" id="image" type="file"/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormLabel for="exampleFormControlInput1">Üst kategori</CFormLabel>
+                    <CFormSelect name="parent_id" aria-label="Default select example">
+                      <option value="">Seçim yapın</option>
+                      <option v-for="category in categories.filter(c => c.id != categoryToUpdate.id)" :key="category.id" :value="category.id" :selected="categoryToUpdate.parent_id == category.id" >{{category.name}}</option>
+                    </CFormSelect>
+                  </div>
+                  <div class="mb-3">
+                    <CFormLabel for="order">Sırası</CFormLabel>
+                    <CFormInput name="order" id="order" type="number" :value="categoryToUpdate.order" placeholder=""/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormCheck name="status" id="status" label="Durum" :checked="categoryToUpdate.status" placeholder=""/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormCheck name="show_home_page_status" label="Öne çıkar" id="show_home_page_status" :checked="categoryToUpdate.show_home_page_status" placeholder=""/>
+                  </div>
+                  <button type="submit" class="btn btn-md btn-primary w-100 text-white">Güncelle</button>
+                </CForm>
+              </CModalBody>
+            </CModal>
+
+             <CModal 
+              :visible="detayModalStatus"
+              @close="() => { detayModalStatus = false }"
+              aria-labelledby="LiveDemoExampleLabel"
+            >
+              <CModalHeader>
+                <CModalTitle id="modal_title"></CModalTitle>
+              </CModalHeader>
+              <CModalBody id="modal_content"></CModalBody>
+            </CModal>
+
+          </v-card>
         </CCardBody>
       </CCard>
     </CCol>
@@ -60,11 +179,132 @@
 </template>
 
 <script>
-export default {
+  import { computed, onMounted, ref } from 'vue'
+  import { useStore } from 'vuex'
+  import Swal from 'sweetalert2'
+  export default {
+    setup(){
+      const store = useStore();
+      const categories = computed(() => store.state.categoriesModule.categories);
+      const search = ref('');
+      const categoryToUpdate = ref('');
+      let detayModalStatus = ref(false);
+      let updateModalStatus = ref(false);
+      let createModalStatus = ref(false);
 
-}
+
+      const headers = [
+        { title: 'Resim', align: 'center', key: 'image' },
+        { title: 'Adı', align: 'start', key: 'name' },
+        { title: 'Üst kategori', align: 'center', key: 'parent_category' },
+        { title: 'Sırası', align: 'center', key: 'order' },
+        { title: 'Öne çıkarma durumu', align: 'center', key: 'show_home_page_status' },
+        { title: 'Durum', align: 'start', key: 'status' },
+        { title: 'İşlemler', align: 'center', key: 'process' },
+      ];
+      
+      const changeStatus = (e) => {
+        const categoryId = e.target.closest('.v-chip').getAttribute('data-id');
+        store.dispatch('categoriesModule/changeStatus',categoryId);
+      }
+
+       const changeHighlightStatus = (e) => {
+        const categoryId = e.target.closest('.v-chip').getAttribute('data-id');
+        store.dispatch('categoriesModule/changeHighlightStatus',categoryId);
+      }
+
+      const detail = async(categoryId) => {
+        detayModalStatus.value = true;
+        const category = await store.dispatch('categoriesModule/getByDetail',categoryId)
+        document.getElementById('modal_title').textContent = `${category.name}  Detay`
+        document.getElementById('modal_content').innerHTML = `
+          <div class='d-flex justify-content-center mb-5'><img style='width:140px;height:140px;border-radius:0.5rem' src='${category.image}' /></div>
+          <div style='margin:0.5rem 0'>
+            <span style='width:120px;display:inline-block' class='fw-semibold'>Kategori adı</span>
+            :
+            <span class='ms-2'>${category.name}</span>
+          </div>
+          <div style='margin-bottom:0.5rem'>
+            <span style='width:120px;display:inline-block' class='fw-semibold'>Sırası</span>
+            :
+            <span class='ms-2'>${category.order}</span>
+          </div>
+          <div style='margin-bottom:0.5rem'>
+            <span style='width:120px;display:inline-block' class='fw-semibold'>Durum</span>
+            :
+            <span class='ms-2'>${category.status ? 'Aktif' : 'Pasif'}</span>
+          </div>
+          <div style='margin-bottom:0.5rem'>
+            <span style='width:auto;display:inline-block' class='fw-semibold'>Öne çıkarma durumu</span>
+            :
+            <span class='ms-2'>${category.show_home_page_status ? 'Aktif' : 'Pasif'}</span>
+          </div>
+          <div style='margin-bottom:0.5rem'>
+            <span style='width:auto;display:inline-block' class='fw-semibold'>Kayıt oluşturma tarihi</span>
+            :
+            <span class='ms-2'>${category.created_at}</span>
+          </div>
+        `
+      }
+
+      const handleCreateSubmit= () => {
+        store.dispatch('categoriesModule/create',"form_create")
+        createModalStatus.value = false
+      }
+
+      const handleUpdateSubmit = () => {
+        store.dispatch('categoriesModule/update',"form_update")
+        updateModalStatus.value = false
+      }
+
+      const updateCategory = async (categoryId) => {
+        categoryToUpdate.value = await store.dispatch('categoriesModule/getByDetail',categoryId)
+        updateModalStatus.value = true;
+      }
+
+      const deleteCategory = (categoryId) => {
+        Swal.fire({
+          title: "Eminmisini ?",
+          text: "Kategoriyi silmek istediğinize eminmisiniz !",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText:"Hayır",
+          confirmButtonText: "Evet",
+          confirmButtonColor: "#d33"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            store.dispatch('categoriesModule/delete',categoryId)
+          }
+        })
+      }
+
+
+      onMounted(() => {
+        store.dispatch('categoriesModule/getCategories')
+      })
+      return {
+        categories,
+        headers,
+        search,
+        changeStatus,
+        detail,
+        updateCategory,
+        handleUpdateSubmit,
+        handleCreateSubmit,
+        deleteCategory,
+        changeHighlightStatus,
+        detayModalStatus,
+        updateModalStatus,
+        createModalStatus,
+        categoryToUpdate
+      }
+    }
+  }
 </script>
 
 <style>
 
+.search-container .v-input__control{
+  width: 50%;
+}
 </style>

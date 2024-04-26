@@ -57,22 +57,55 @@
                   ></v-chip>
                   </td>
                   <td>
-                    <CButton :data-id= item.id class="btn-detail" style="color:white!important" size="sm" color="primary" @click="detail">Detay</CButton>
-                    
+                    <CButton class="btn-detail me-1" style="color:white!important" size="sm" color="primary" @click="detail(item.id)">Detay</CButton>
+                    <CButton class="btn-update" style="color:white!important" size="sm" color="warning" @click="updateUser(item.id)">Güncelle</CButton>
                   </td>
                 </tr>
               </template>
             </v-data-table>
+
+             <CModal 
+              :visible="updateModalStatus"
+              @close="() => { updateModalStatus = false }"
+              aria-labelledby="LiveDemoExampleLabel"
+            >
+              <CModalHeader>
+                <CModalTitle>{{userToUpdate.first_name}} {{userToUpdate.last_name}} güncelle</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+                <CForm id="form_update" @submit.prevent="handleUpdateSubmit">
+                  <input type="hidden" name="user_id" :value="userToUpdate.id">
+                  <div class="mb-3">
+                    <CFormLabel for="first_name">Ad</CFormLabel>
+                    <CFormInput name="first_name" id="first_name" type="text" :value="userToUpdate.first_name"/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormLabel for="last_name">Soyad</CFormLabel>
+                    <CFormInput name="last_name" id="last_name" type="text" :value="userToUpdate.last_name"/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormLabel for="image">Resim</CFormLabel>
+                    <CFormInput name="image" id="image" type="file"/>
+                  </div>
+                  <div class="mb-3">
+                    <CFormLabel for="email">Email</CFormLabel>
+                    <CFormInput name="email" id="email" type="email" :value="userToUpdate.email"/>
+                  </div>
+                  <button type="submit" class="btn btn-md btn-primary w-100 text-white mt-3">Güncelle</button>
+                </CForm>
+              </CModalBody>
+            </CModal>
+            
             <CModal 
-                      :visible="detayModalStatus"
-                      @close="() => { detayModalStatus = false }"
-                      aria-labelledby="LiveDemoExampleLabel"
-                    >
-                      <CModalHeader>
-                        <CModalTitle id="modal_title"></CModalTitle>
-                      </CModalHeader>
-                      <CModalBody id="modal_content"></CModalBody>
-                    </CModal>
+              :visible="detayModalStatus"
+              @close="() => { detayModalStatus = false }"
+              aria-labelledby="LiveDemoExampleLabel"
+            >
+              <CModalHeader>
+                <CModalTitle id="modal_title"></CModalTitle>
+              </CModalHeader>
+              <CModalBody id="modal_content"></CModalBody>
+            </CModal>
           </v-card>
         </CCardBody>
       </CCard>
@@ -81,7 +114,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -91,7 +124,9 @@ export default {
     const store = useStore();
     const users = computed(() => store.state.usersModule.users);
     const search = ref('');
+    const userToUpdate = ref('');
     let detayModalStatus = ref(false);
+    let updateModalStatus = ref(false);
 
     const headers = [
       { title: 'Resim', align: 'center', key: 'image' },
@@ -106,11 +141,9 @@ export default {
         const userId = e.target.closest('.v-chip').getAttribute('data-id');
         store.dispatch('usersModule/changeStatus',userId);
     }
-    const detail = async(e) => {
-      detayModalStatus.value = true
-      const userId = e.target.closest('.btn-detail').getAttribute('data-id');
-      const user = await store.dispatch('usersModule/getByDetail',userId)
-      console.log(user)
+    const detail = async(userId) => {
+      detayModalStatus.value = true;
+      const user = await store.dispatch('usersModule/getByDetail',userId);
       document.getElementById('modal_title').textContent = `${user.first_name} ${user.last_name}  Detay`
       document.getElementById('modal_content').innerHTML = `
         <div class='d-flex justify-content-center mb-5'><img style='width:140px;height:140px;border-radius:0.5rem' src='${user.image}' /></div>
@@ -140,6 +173,17 @@ export default {
           <span class='ms-2'>${user.created_at}</span>
         </div>
       `
+      
+    }
+
+    const updateUser = async (userId) => {
+      userToUpdate.value = await store.dispatch('usersModule/getByDetail',userId);
+      updateModalStatus.value = true
+    }
+
+    const handleUpdateSubmit = () => {
+        store.dispatch('usersModule/update','form_update')
+        updateModalStatus.value = false;
     }
 
     return {
@@ -148,7 +192,11 @@ export default {
       search,
       changeStatus,
       detayModalStatus,
-      detail
+      updateModalStatus,
+      handleUpdateSubmit,
+      userToUpdate,
+      detail,
+      updateUser
     };
   },
 };

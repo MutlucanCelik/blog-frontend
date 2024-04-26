@@ -4,6 +4,8 @@ import router from '@/app/router'
 import store from '@/app/store'
 import CoreuiVue from '@coreui/vue'
 import CIcon from '@coreui/icons-vue'
+
+
 import { iconsSet as icons } from '@/assets/icons'
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'

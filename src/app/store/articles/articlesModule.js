@@ -1,4 +1,5 @@
 import httpBase from '../../utils/http/http';
+import defaultImage from '@/assets/images/empty-image.jpg';
 
 const articlesModule = {
     namespaced:true,
@@ -7,7 +8,7 @@ const articlesModule = {
     },
     mutations: {
         setArticles(state, articles) {
-            articles.forEach(article => article.image ? article.image = import.meta.env.VITE_BASE_URL + article.image.slice(1) : article.image = null);
+            articles.forEach(article => article.image ? article.image = import.meta.env.VITE_BASE_URL + article.image.slice(1) : article.image = defaultImage);
             state.articles = articles;
         },
         setStatus(state,articleId){

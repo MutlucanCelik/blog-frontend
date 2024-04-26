@@ -28,3 +28,19 @@ export default {
   },
 }
 </script>
+
+<style>
+ .body{
+  position: relative;
+  z-index: 9991;
+ }
+ .sidebar{
+  z-index: 9992 !important;
+ }
+ .swal2-container{
+  z-index: 9993;
+}
+.modal-content{
+  padding: 1rem !important;
+}
+</style>
