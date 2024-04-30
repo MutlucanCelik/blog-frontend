@@ -48,14 +48,13 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import httpBase from '@/app/utils/http/http.js';
+import {appLocalStorage} from '@/app/utils/storage/storage.js';
 
 export default {
   name: 'Login',
   setup() {
     const router = useRouter();
-    const store = useStore();
     const email = ref('');
     const password = ref('');
     const errorMessage = ref('');
@@ -74,7 +73,7 @@ export default {
           if(response.data.user.role_id !== 1){
             errorMessage.value = 'Erişim izniniz bulunammakta';
           }else{
-            store.commit('setUser', response.data.user);
+            appLocalStorage.setItem('id',response.data.user.id)
             router.push({ name: 'Dashboard' });
             errorMessage.value = '';
             email.value = '';

@@ -70,29 +70,33 @@
               aria-labelledby="LiveDemoExampleLabel"
             >
               <CModalHeader>
-                <CModalTitle>{{userToUpdate.first_name}} {{userToUpdate.last_name}} güncelle</CModalTitle>
+                <h5 class="m-0" ref="modalTitle" ></h5>
               </CModalHeader>
               <CModalBody>
-                <CForm id="form_update" @submit.prevent="handleUpdateSubmit">
+                <Form id="form_update" :validation-schema="userSchema"  @submit="handleUpdateSubmit">
                   <input type="hidden" name="user_id" :value="userToUpdate.id">
                   <div class="mb-3">
                     <CFormLabel for="first_name">Ad</CFormLabel>
-                    <CFormInput name="first_name" id="first_name" type="text" :value="userToUpdate.first_name"/>
+                    <Field name="first_name" id="first_name" class="form-control"  :validateOnInput="true" type="text" v-model="userToUpdate.first_name"/>
+                    <ErrorMessage class="error-message" name="first_name" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="last_name">Soyad</CFormLabel>
-                    <CFormInput name="last_name" id="last_name" type="text" :value="userToUpdate.last_name"/>
+                    <Field name="last_name" id="last_name" class="form-control" :validateOnInput="true" type="text" v-model="userToUpdate.last_name"/>
+                     <ErrorMessage class="error-message" name="last_name" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="image">Resim</CFormLabel>
-                    <CFormInput name="image" id="image" type="file"/>
+                    <Field name="image" id="image" class="form-control" type="file"/>
+                     <ErrorMessage class="error-message" name="image" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="email">Email</CFormLabel>
-                    <CFormInput name="email" id="email" type="email" :value="userToUpdate.email"/>
+                    <Field name="email" id="email" class="form-control" :validateOnInput="true" type="email" v-model="userToUpdate.email"/>
+                     <ErrorMessage class="error-message" name="email" />
                   </div>
                   <button type="submit" class="btn btn-md btn-primary w-100 text-white mt-3">Güncelle</button>
-                </CForm>
+                </Form>
               </CModalBody>
             </CModal>
             
@@ -114,16 +118,24 @@
 </template>
 
 <script>
+import {userSchema} from '@/app/utils/validations/user-schema.js'
+import {Form, Field, ErrorMessage} from 'vee-validate'
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
   name: 'User',
+  components:{
+    Form,
+    Field,
+    ErrorMessage
+  },
 
   setup() {
     const store = useStore();
     const users = computed(() => store.state.usersModule.users);
     const search = ref('');
+    const modalTitle = ref(null)
     const userToUpdate = ref('');
     let detayModalStatus = ref(false);
     let updateModalStatus = ref(false);
@@ -177,8 +189,9 @@ export default {
     }
 
     const updateUser = async (userId) => {
-      userToUpdate.value = await store.dispatch('usersModule/getByDetail',userId);
       updateModalStatus.value = true
+      userToUpdate.value = await store.dispatch('usersModule/getByDetail',userId);
+      modalTitle.value.innerText = userToUpdate.value.first_name + ' ' + userToUpdate.value.last_name + ' güncelle';
     }
 
     const handleUpdateSubmit = () => {
@@ -193,10 +206,12 @@ export default {
       changeStatus,
       detayModalStatus,
       updateModalStatus,
+      modalTitle,
       handleUpdateSubmit,
       userToUpdate,
       detail,
-      updateUser
+      updateUser,
+      userSchema
     };
   },
 };

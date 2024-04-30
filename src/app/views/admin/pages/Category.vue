@@ -88,21 +88,24 @@
                 <CModalTitle id="modal_title">Kategori ekle</CModalTitle>
               </CModalHeader>
               <CModalBody id="modal_content">
-                <CForm id="form_create" @submit.prevent="handleCreateSubmit">
+                <Form id="form_create" :validation-schema="createCategorySchema" @submit="handleCreateSubmit">
                   <div class="mb-3">
                     <CFormLabel for="name">Kategori adı</CFormLabel>
-                    <CFormInput name="name" id="name" type="text" placeholder=""/>
+                    <Field name="name" id="name" type="text" :validateOnInput="true" class="form-control"/>
+                    <ErrorMessage class="error-message" name="name" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="image">Resim</CFormLabel>
-                    <CFormInput name="image" id="image" type="file"/>
+                    <Field name="image" id="image" type="file" class="form-control"/>
+                    <ErrorMessage class="error-message" name="image" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="exampleFormControlInput1">Üst kategori</CFormLabel>
-                    <CFormSelect name="parent_id" aria-label="Default select example">
+                    <Field name="parent_id" :validateOnInput="true" as="select" class="form-select">
                       <option value="">Seçim yapın</option>
                       <option v-for="category in categories" :key="category.id" :value="category.id">{{category.name}}</option>
-                    </CFormSelect>
+                    </Field>
+                    <ErrorMessage class="error-message" name="parent_id" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="order">Sırası</CFormLabel>
@@ -115,7 +118,7 @@
                     <CFormCheck name="show_home_page_status" label="Öne çıkar" id="show_home_page_status" placeholder=""/>
                   </div>
                   <button type="submit" class="btn btn-md btn-success w-100 text-white">Ekle</button>
-                </CForm>
+                </Form>
               </CModalBody>
             </CModal>
 
@@ -128,22 +131,25 @@
                 <CModalTitle id="modal_title">Kategori güncelle</CModalTitle>
               </CModalHeader>
               <CModalBody id="modal_content">
-                <CForm id="form_update" @submit.prevent="handleUpdateSubmit">
+                <Form id="form_update" :validation-schema="updateCategorySchema" @submit="handleUpdateSubmit">
                   <input name="id" type="hidden" :value="categoryToUpdate.id">
                   <div class="mb-3">
                     <CFormLabel for="name">Kategori adı</CFormLabel>
-                    <CFormInput name="name" id="name" type="text" :value="categoryToUpdate.name" placeholder=""/>
+                    <Field :validateOnInput="true" class="form-control" name="name" id="name" type="text" v-model="categoryToUpdate.name"/>
+                    <ErrorMessage class="error-message" name="name" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="image">Resim</CFormLabel>
-                    <CFormInput name="image" id="image" type="file"/>
+                    <Field class="form-control" name="image" id="image" type="file"/>
+                    <ErrorMessage class="error-message" name="image" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="exampleFormControlInput1">Üst kategori</CFormLabel>
-                    <CFormSelect name="parent_id" aria-label="Default select example">
+                    <Field v-model= categoryToUpdate.parent_id  :validateOnInput="true" class="form-select" name="parent_id" as="select" >
                       <option value="">Seçim yapın</option>
-                      <option v-for="category in categories.filter(c => c.id != categoryToUpdate.id)" :key="category.id" :value="category.id" :selected="categoryToUpdate.parent_id == category.id" >{{category.name}}</option>
-                    </CFormSelect>
+                      <option v-for="category in categories.filter(c => c.id != categoryToUpdate.id)" :key="category.id" :value="category.id">{{category.name}}</option>
+                    </Field>
+                    <ErrorMessage class="error-message" name="parent_id" />
                   </div>
                   <div class="mb-3">
                     <CFormLabel for="order">Sırası</CFormLabel>
@@ -156,7 +162,7 @@
                     <CFormCheck name="show_home_page_status" label="Öne çıkar" id="show_home_page_status" :checked="categoryToUpdate.show_home_page_status" placeholder=""/>
                   </div>
                   <button type="submit" class="btn btn-md btn-primary w-100 text-white">Güncelle</button>
-                </CForm>
+                </Form>
               </CModalBody>
             </CModal>
 
@@ -179,10 +185,17 @@
 </template>
 
 <script>
+import { Field, Form, ErrorMessage } from 'vee-validate';
+import {createCategorySchema,updateCategorySchema} from '@/app/utils/validations/category-schema.js'
   import { computed, onMounted, ref } from 'vue'
   import { useStore } from 'vuex'
   import Swal from 'sweetalert2'
   export default {
+    components:{
+      Field,
+      Form,
+      ErrorMessage
+    },
     setup(){
       const store = useStore();
       const categories = computed(() => store.state.categoriesModule.categories);
@@ -296,7 +309,9 @@
         detayModalStatus,
         updateModalStatus,
         createModalStatus,
-        categoryToUpdate
+        categoryToUpdate,
+        createCategorySchema,
+        updateCategorySchema
       }
     }
   }
@@ -304,7 +319,4 @@
 
 <style>
 
-.search-container .v-input__control{
-  width: 50%;
-}
 </style>

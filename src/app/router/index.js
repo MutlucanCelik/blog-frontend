@@ -10,6 +10,7 @@ import ArticleDetail from "@/app/views/admin/pages/article/ArticleDetail.vue";
 import Setting from "@/app/views/admin/pages/Setting.vue";
 import Login from "@/app/views/admin/pages/Login.vue";
 import Notfound from "@/app/views/Notfound.vue";
+import { computed } from 'vue';
 
 
 const routes = [
@@ -30,15 +31,11 @@ const routes = [
          path:"",
          name: "Dashboard",
          component: Dashboard,
-         
        },
        {
          path:"users",
          name: "User",
          component: User,
-         meta: {
-          requiresAuth: true
-        },
        },
        {
          path:"categories",
@@ -76,9 +73,9 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   let requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
-  let isLogin = await store.getters.isLogin;
+  let isLogin = computed(() =>store.getters.isLogin);
 
   if (requiresAuth && !isLogin) {
     next({ name: "Login" });

@@ -8,6 +8,7 @@
 
 import MainChart from '@/app/views/admin/pages/MainChart.vue'
 import WidgetsStatsA from '@/app/components/widgets/WidgetsStatsTypeA.vue'
+import {appLocalStorage} from '@/app/utils/storage/storage.js';
 import { useStore } from 'vuex'
 import { computed, onMounted } from 'vue'
 
@@ -23,8 +24,10 @@ export default {
     const articleCount = computed(() => store.getters['articlesModule/numberOfActiveArticles'])
 
     onMounted(() => {
+      store.dispatch('getAdmin',appLocalStorage.getItem('id'))
       store.dispatch('usersModule/getUsers');
       store.dispatch('articlesModule/getArticles');
+      
 
     });
   

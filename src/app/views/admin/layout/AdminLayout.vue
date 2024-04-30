@@ -43,4 +43,11 @@ export default {
 .modal-content{
   padding: 1rem !important;
 }
+.search-container .v-input__control{
+  width: 50%;
+}
+.error-message{
+  color: #d33;
+  margin-top: 0.5rem;
+}
 </style>

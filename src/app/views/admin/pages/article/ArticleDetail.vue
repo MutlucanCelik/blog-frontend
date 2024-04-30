@@ -86,7 +86,6 @@ export default {
         onMounted(async () => {
             const data = await store.dispatch('articlesModule/getByDetail',props.articleId);
             article.value = data
-            console.log(article.value)
         })
         return{
             article

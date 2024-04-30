@@ -12,7 +12,7 @@ const usersModule = {
     mutations: {
         setUsers(state, users) {
             users.forEach(user => user.image ? user.image = import.meta.env.VITE_BASE_URL + user.image.slice(1) : user.image = defaultImage);
-            state.users = users
+            state.users = users;
         },
         setStatus(state, userId) {
             const user = state.users.find(user => user.id == userId)

@@ -27,9 +27,11 @@ const categoriesModule = {
                 position: "center",
                 icon: "success",
                 title: "Başarılı",
-                text:"Kategori başarıyla eklendi",
+                text: "Kategori başarıyla eklendi",
                 showConfirmButton: false,
                 timer: 2000
+              }).then(() => {
+                window.location.reload();
               });
         },
         updateCategory(state,category){
@@ -51,10 +53,13 @@ const categoriesModule = {
                 position: "center",
                 icon: "success",
                 title: "Başarılı",
-                text:"Kategori başarıyla Silindi",
+                text: "Kategori başarıyla Silindi",
                 showConfirmButton: false,
                 timer: 2000
+              }).then(() => {
+                window.location.reload();
               });
+              
         }
     },
     actions: {
@@ -103,7 +108,6 @@ const categoriesModule = {
                 });
                 commit('addCategory',response.data.category)
             }catch(error){
-                console.log(error.response.data)
                 const errors = error.response.data.errors;
                 let errorMessage ="";
 

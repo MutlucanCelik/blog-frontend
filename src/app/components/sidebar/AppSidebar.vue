@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import {appLocalStorage} from '@/app/utils/storage/storage.js';
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useStore } from 'vuex'
@@ -49,7 +50,7 @@ export default {
     const store = useStore()
 
     const logout = () => {
-      console.log('Çıkış yapıldı')
+      appLocalStorage.removeItem('id');
     }
     return {
       logo,
