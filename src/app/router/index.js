@@ -3,6 +3,7 @@ import store from '../store';
 
 import FrontLayout from "@/app/views/front/layout/FrontLayout.vue";
 import Home from "@/app/views/front/pages/Home.vue";
+import ArticleDetailFront from "@/app/views/front/pages/ArticleDetail.vue";
 
 import AdminLayout from "@/app/views/admin/layout/AdminLayout.vue";
 import Dashboard from "@/app/views/admin/pages/Dashboard.vue";
@@ -31,6 +32,12 @@ const routes = [
         path:'',
         name: "Home",
         component:Home
+      },
+      {
+        path:'article-detail/:articleId',
+        name: "ArticleDetailFront",
+        component:ArticleDetailFront,
+        props: true
       }
     ]
   },

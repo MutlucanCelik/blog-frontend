@@ -39,6 +39,9 @@ const articlesModule = {
                 const article = response.data.article
                 const date = new Intl.DateTimeFormat('tr-TR').format(new Date(article.created_at));
                 article.image ? article.image = import.meta.env.VITE_BASE_URL + article.image.slice(1) : article.image = null
+                article.get_comments.forEach(i => {
+                    i.user.image ? i.user.image = import.meta.env.VITE_BASE_URL + i.user.image.slice(1) : i.user.image = null
+                })
                 article.created_at = date
                 return article;
             }catch(error){
