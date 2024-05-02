@@ -6,36 +6,44 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <CForm @submit.prevent="login">
+                <Form :validation-schema='loginSchema' @submit="login">
                   <h1>Giriş</h1>
                   <p class="text-body-secondary">Tekrardan hoş geldiniz..</p>
-                  <CInputGroup class="mb-3">
+                  <CInputGroup>
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
                     </CInputGroupText>
-                    <CFormInput
+                    <Field
                       placeholder="Email"
                       type="text"
                       v-model="email"
+                      class="form-control"
+                      name='login'
+                      :validateOnBlur='false'
                     />
                   </CInputGroup>
-                  <CInputGroup class="mb-4">
+                  <ErrorMessage class="error-message" name='login'/>
+                  <CInputGroup class="mt-3">
                     <CInputGroupText>
                       <CIcon icon="cil-lock-locked" />
                     </CInputGroupText>
-                    <CFormInput
+                    <Field
                       type="password"
                       placeholder="Password"
                       v-model="password"
+                      class="form-control"
+                      name='password'
+                      :validateOnBlur='false'
                     />
                   </CInputGroup>
-                  <CRow>
-                    <CButton type="submit" color="primary text-white" class="px-4 w-100">Giriş</CButton>
+                  <ErrorMessage class="error-message" name='password'/>
+                  <CRow class="px-3">
+                    <CButton type="submit" color="primary text-white" class="px-4 mt-4 w-100">Giriş</CButton>
                     <div v-if="errorMessage" class="alert alert-danger mt-2 py-1">
                       {{ errorMessage }}
                     </div>
                   </CRow>
-                </CForm>
+                </Form>
               </CCardBody>
             </CCard>
           </CCardGroup>
@@ -50,9 +58,12 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import httpBase from '@/app/utils/http/http.js';
 import {appLocalStorage} from '@/app/utils/storage/storage.js';
+import {loginSchema} from '@/app/utils/validations/auth-schema.js'
+import {Form, Field, ErrorMessage} from 'vee-validate'
 
 export default {
   name: 'Login',
+  components:{Form, Field, ErrorMessage},
   setup() {
     const router = useRouter();
     const email = ref('');
@@ -95,8 +106,15 @@ export default {
       email,
       password,
       login,
-      errorMessage
+      errorMessage,
+      loginSchema
     };
   }
 };
 </script>
+<style scoped>
+  .error-message{
+    color: #d33;
+    margin-top: 0.5rem;
+  }
+</style>

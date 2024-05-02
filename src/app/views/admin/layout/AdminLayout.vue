@@ -14,9 +14,9 @@
 </template>
 <script>
 import { CContainer } from '@coreui/vue'
-import AppFooter from '@/app/components/AppFooter.vue'
-import AppHeader from '@/app/components/header/AppHeader.vue'
-import AppSidebar from '@/app/components/sidebar/AppSidebar.vue'
+import AppFooter from '@/app/components/admin/AppFooter.vue'
+import AppHeader from '@/app/components/admin/header/AppHeader.vue'
+import AppSidebar from '@/app/components/admin/sidebar/AppSidebar.vue'
 
 export default {
   name: 'DefaultLayout',

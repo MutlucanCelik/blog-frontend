@@ -7,7 +7,6 @@
           <br />
           <v-card style="padding:0 1rem" >
             <v-card-title class="d-flex align-center pe-2">
-              
               <v-text-field
                 v-model="search"
                 density="compact"

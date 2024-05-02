@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store';
 
+import FrontLayout from "@/app/views/front/layout/FrontLayout.vue";
+import Home from "@/app/views/front/pages/Home.vue";
+
 import AdminLayout from "@/app/views/admin/layout/AdminLayout.vue";
 import Dashboard from "@/app/views/admin/pages/Dashboard.vue";
 import User from "@/app/views/admin/pages/User.vue";
@@ -14,11 +17,23 @@ import { computed } from 'vue';
 
 
 const routes = [
-    {
-        path:"/admin/login",
-        name: "Login",
-        component:Login
-    },
+  {
+      path:"/admin/login",
+      name: "Login",
+      component:Login
+  },
+  {
+    path:'',
+    name:"FrontLayout",
+    component:FrontLayout,
+    children:[
+      {
+        path:'',
+        name: "Home",
+        component:Home
+      }
+    ]
+  },
    {
     path: '/admin',
     name: 'AdminLayout',
